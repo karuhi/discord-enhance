@@ -22,7 +22,7 @@ function main() {
 
     window.location.href = "/";
   } else {
-    const randStr = generateRandomString_v3();
+    const randStr = generateRandomString();
     localStorage.setItem("stateParameter", randStr);
     window.location.href = "/#state=" + encodeURIComponent(btoa(randStr));
   }

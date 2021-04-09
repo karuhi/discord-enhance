@@ -27,7 +27,7 @@ function init() {
   } else {
     let state = urlHash.get("state");
     if (state == null) {
-      state = generateRandomString_v3();
+      state = generateRandomString();
     }
     // console.log(state);
     localStorage.setItem("stateParameter", state);
