@@ -104,17 +104,24 @@ function renderGuidMaxSize(size) {
 
 function renderGuildList(data) {
   var container = document.getElementById("infoCardContainer");
+  console.table(data);
   container.innerHTML = " ";
-  data.forEach((item) => {
+  data.forEach((item, index) => {
     let icon = `<img
     src="https://cdn.discordapp.com/icons/${item.id}/${item.icon}.png"
   />`;
     if (item.icon == null) {
       icon = item.name;
     }
-    const tmp = `<!-- info card grid -->
+    let tips = "";
+    item.features.forEach((fea) => {
+      tips += `<span class="mdl-chip">
+      <span class="mdl-chip__text">${fea}</span>
+  </span>`;
+    });
+    const tmp = `<!-- info card grid ${index + 1} -->
     <div
-      class="demo-updates mdl-card mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet mdl-cell--12-col-phone"
+      class="demo-updates mdl-card mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--12-col-phone mdl-color--blue-grey-600"
     >
       <!-- info card-->
       <div
@@ -126,19 +133,19 @@ function renderGuildList(data) {
           ${item.name}
         </h2>
       </div>
-      <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-        ${item.features}
+      <div class="mdl-card__supporting-text mdl-color-text--blue-grey-100">
+        ${tips}
       </div>
       <div class="mdl-card__actions mdl-card--border">
         <a
           href="#"
-          class="mdl-button mdl-js-button mdl-js-ripple-effect"
+          class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--blue-grey-100"
           >Read More</a
         >
       </div>
       <!-- info card end -->
     </div>
-    <!-- info card grid end -->`;
+    <!-- info card grid ${index + 1} end -->`;
     // 挿入
     container.insertAdjacentHTML("beforeend", tmp);
   });
