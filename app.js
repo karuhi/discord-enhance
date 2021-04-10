@@ -14,6 +14,7 @@ require("dotenv").config();
 // 8080番ポートで待ちうける
 app.listen(8080, () => {
   console.log("Running at Port 8080...");
+  console.log("view app on http://localhost:8080");
 });
 
 // 静的ファイルのルーティング
