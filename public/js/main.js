@@ -1,3 +1,5 @@
+import { generateRandomString } from './genRandStr';
+
 window.onload = () => {
   init();
 };
@@ -5,19 +7,19 @@ window.onload = () => {
 function init() {
   const urlHash = new URLSearchParams(window.location.hash.slice(1));
   const fragment = {
-    tokenType: sessionStorage.getItem("d_tokenType"),
-    accessToken: sessionStorage.getItem("d_access_token"),
-    state: sessionStorage.getItem("d_state"),
+    tokenType: sessionStorage.getItem('d_tokenType'),
+    accessToken: sessionStorage.getItem('d_access_token'),
+    state: sessionStorage.getItem('d_state'),
   };
   // console.log(fragment);
-  if (fragment.accessToken != "undefined" && fragment.accessToken != null) {
-    console.log("accessToken find");
+  if (fragment.accessToken != 'undefined' && fragment.accessToken != null) {
+    console.log('accessToken find');
     const urlState = fragment.state;
-    const stateParameter = localStorage.getItem("stateParameter");
+    const stateParameter = localStorage.getItem('stateParameter');
     // console.log(stateParameter);
     // console.log(urlState);
     if (stateParameter !== urlState) {
-      return console.log("You may have been clickjacked!");
+      return console.log('You may have been clickjacked!');
     }
 
     const accessToken = fragment.accessToken;
@@ -25,41 +27,41 @@ function init() {
 
     main(tokenType, accessToken);
   } else {
-    let state = urlHash.get("state");
+    let state = urlHash.get('state');
     if (state == null) {
       state = generateRandomString();
     }
     // console.log(state);
-    localStorage.setItem("stateParameter", state);
+    localStorage.setItem('stateParameter', state);
 
-    document.getElementById("login").href += `&state=${state}`;
-    document.getElementById("login").style.display = "block";
+    document.getElementById('login').href += `&state=${state}`;
+    document.getElementById('login').style.display = 'block';
   }
 }
 
 function main(tokenType, accessToken) {
   // あいさつ
-  fetchData("users/@me", tokenType, accessToken)
+  fetchData('users/@me', tokenType, accessToken)
     .then((data) => {
       const { username, discriminator, avatar, id } = data;
-      let doc = document.getElementById("info");
-      doc.innerHTML = " ";
-      doc.innerHTML = `<img src="https://cdn.discordapp.com/avatars/${id}/${avatar}.png"/>`;
+      let doc = document.getElementById('info');
+      doc.innerHTML = ' ';
+      doc.innerHTML = `<img src="${ENV_AVATAR_BASE_URL}/${id}/${avatar}.png"/>`;
       doc.innerHTML += `こんにちは！ ${username}#${discriminator}さん。今日はなにをしましょう？`;
     })
     .catch((err) => {
       console.log(err);
     });
   // ギルドデータ取得
-  fetchData("users/@me/guilds", tokenType, accessToken)
+  fetchData('users/@me/guilds', tokenType, accessToken)
     .then((data) => {
       document.getElementById(
-        "guilds_count"
+        'guilds_count'
       ).innerHTML = `あなたは今、${data.length}個のサーバーに参加しています。`;
-      let doc = document.getElementById("guilds_list");
+      let doc = document.getElementById('guilds_list');
 
       data.forEach((data) => {
-        doc.innerHTML += data.name + "<br />";
+        doc.innerHTML += data.name + '<br />';
       });
     })
     .catch((err) => {
@@ -68,7 +70,7 @@ function main(tokenType, accessToken) {
 }
 
 async function fetchData(url, tokenType, accessToken) {
-  const res = await fetch("https://discord.com/api/" + url, {
+  const res = await fetch(`${ENV_API_BASE_URL}/${url}`, {
     headers: {
       authorization: `${tokenType} ${accessToken}`,
     },
