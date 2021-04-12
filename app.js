@@ -14,6 +14,7 @@ require("dotenv").config();
 // 8080番ポートで待ちうける
 app.listen(8080, () => {
   console.log("Running at Port 8080...");
+  console.log("view app on http://localhost:8080");
 });
 
 // 静的ファイルのルーティング
@@ -45,9 +46,9 @@ app.get("/api/auth", (req, res) => {
       // })
       .then(
         (info) => {
-          // console.log(info);
+          console.log(info);
           res.redirect(
-            `/success.html#access_token=${info.access_token}&token_type=${info.token_type}&state=${req.query.state}`
+            `/authenticated.html#access_token=${info.access_token}&token_type=${info.token_type}&state=${req.query.state}`
           );
         }
         // fetch("https://discord.com/api/users/@me", {
