@@ -1,34 +1,34 @@
-const path = require('path');
-const dotenv = require('dotenv');
+const path = require("path");
+const dotenv = require("dotenv");
 dotenv.config();
 
 const env = dotenv.config({
-  path: path.resolve(process.cwd(), '.env.front')
+  path: path.resolve(process.cwd(), ".env.front"),
 }).parsed;
 
 let settings = {
-  entryPoints: ['public/js/main.js', 'public/js/success.js'],
+  entryPoints: ["public/js/main.js", "public/js/authenticated.js"],
   bundle: true,
-  outdir: 'public/js/dist',
+  outdir: "public/js/dist",
   define: {
-    'process.env': JSON.stringify(env)
+    "process.env": JSON.stringify(env),
   },
   minify: true,
 };
 
-if (process.env.WATCH_MODE === 'true') {
-  settings['watch'] = {
+if (process.env.WATCH_MODE === "true") {
+  settings["watch"] = {
     onRebuild(error, result) {
       if (error) {
-        console.error('watch build failed:', error);
+        console.error("watch build failed:", error);
       } else {
-        console.log('watch build succeeded:', result);
+        console.log("watch build succeeded:", result);
       }
     },
   };
 }
 
-require('esbuild')
+require("esbuild")
   .build(settings)
-  .then(() => console.log('build succeeded'))
+  .then(() => console.log("build succeeded"))
   .catch(() => process.exit(1));

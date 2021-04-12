@@ -5,16 +5,18 @@ const API_BASE_URL = process.env.API_BASE_URL;
 const CLIENT_ID = process.env.CLIENT_ID;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 const AVATAR_BASE_URL = process.env.AVATAR_BASE_URL;
-const SERVER_ICON_URL = process.env.SERVER_ICON_URL;
+const ICON_BASE_URL = process.env.ICON_BASE_URL;
 
 window.onload = () => {
   init();
 };
 
 function getQueryString(params) {
-  return Object.keys(params).map(key => (
-    encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
-  )).join('&');
+  return Object.keys(params)
+    .map(
+      (key) => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])
+    )
+    .join("&");
 }
 
 function init() {
@@ -26,7 +28,6 @@ function init() {
   };
   // console.log(fragment);
   if (fragment.accessToken != "undefined" && fragment.accessToken != null) {
-    console.log("accessToken find");
     const urlState = fragment.state;
     const stateParameter = localStorage.getItem("stateParameter");
     // console.log(stateParameter);
@@ -48,12 +49,12 @@ function init() {
     localStorage.setItem("stateParameter", state);
 
     // ログインURL生成
-    const scope = ['identify', 'guilds'];
+    const scope = ["identify", "guilds"];
     const qs = getQueryString({
       client_id: CLIENT_ID,
       redirect_uri: REDIRECT_URI,
-      response_type: 'code',
-      scope: scope.join(' '),
+      response_type: "code",
+      scope: scope.join(" "),
       state: state,
     });
     let loginUrl = `${API_BASE_URL}/oauth2/authorize?${qs}`;
@@ -134,7 +135,7 @@ function renderGuildList(data) {
   container.innerHTML = " ";
   data.forEach((item, index) => {
     let icon = `<img
-    src="${SERVER_ICON_URL}/${item.id}/${item.icon}.png"
+    src="${ICON_BASE_URL}/${item.id}/${item.icon}.png"
   />`;
     if (item.icon == null) {
       icon = item.name;
