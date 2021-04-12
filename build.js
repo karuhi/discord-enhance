@@ -1,20 +1,18 @@
-require('dotenv').config();
-const config = require('./config');
+const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config();
 
-const define = {
-  'process.env.NODE_ENV': '"development"',
-};
-
-const configClient = config.client();
-for (const k in configClient) {
-  define[k] = `"${configClient[k]}"`;
-}
+const env = dotenv.config({
+  path: path.resolve(process.cwd(), '.env.front')
+}).parsed;
 
 let settings = {
   entryPoints: ['public/js/main.js', 'public/js/success.js'],
   bundle: true,
   outdir: 'public/js/dist',
-  define: define,
+  define: {
+    'process.env': JSON.stringify(env)
+  },
   minify: true,
 };
 
@@ -32,4 +30,5 @@ if (process.env.WATCH_MODE === 'true') {
 
 require('esbuild')
   .build(settings)
+  .then(() => console.log('build succeeded'))
   .catch(() => process.exit(1));

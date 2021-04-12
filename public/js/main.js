@@ -1,8 +1,21 @@
 import { generateRandomString } from "./genRandStr";
 
+// 環境変数
+const API_BASE_URL = process.env.API_BASE_URL;
+const CLIENT_ID = process.env.CLIENT_ID;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+const AVATAR_BASE_URL = process.env.AVATAR_BASE_URL;
+const SERVER_ICON_URL = process.env.SERVER_ICON_URL;
+
 window.onload = () => {
   init();
 };
+
+function getQueryString(params) {
+  return Object.keys(params).map(key => (
+    encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+  )).join('&');
+}
 
 function init() {
   const urlHash = new URLSearchParams(window.location.hash.slice(1));
@@ -34,7 +47,18 @@ function init() {
     // console.log(state);
     localStorage.setItem("stateParameter", state);
 
-    document.getElementById("login_url").href += `&state=${state}`;
+    // ログインURL生成
+    const scope = ['identify', 'guilds'];
+    const qs = getQueryString({
+      client_id: CLIENT_ID,
+      redirect_uri: REDIRECT_URI,
+      response_type: 'code',
+      scope: scope.join(' '),
+      state: state,
+    });
+    let loginUrl = `${API_BASE_URL}/oauth2/authorize?${qs}`;
+
+    document.getElementById("login_url").href = loginUrl;
     document.getElementById("accbtn").style.display = "block";
   }
 }
@@ -45,7 +69,7 @@ function main(tokenType, accessToken) {
     .then((data) => {
       const { username, discriminator, avatar, id } = data;
       let doc = document.getElementById("userAvatar");
-      doc.src = `${ENV_AVATAR_BASE_URL}/${id}/${avatar}.png`;
+      doc.src = `${AVATAR_BASE_URL}/${id}/${avatar}.png`;
       let doc2 = document.getElementById("userName");
       doc2.innerHTML = `こんにちは、<br /> ${username}#${discriminator}さん。`;
     })
@@ -72,7 +96,7 @@ function main(tokenType, accessToken) {
 }
 
 async function fetchData(url, tokenType, accessToken) {
-  const res = await fetch(`${ENV_API_BASE_URL}/${url}`, {
+  const res = await fetch(`${API_BASE_URL}/${url}`, {
     headers: {
       authorization: `${tokenType} ${accessToken}`,
     },
@@ -110,7 +134,7 @@ function renderGuildList(data) {
   container.innerHTML = " ";
   data.forEach((item, index) => {
     let icon = `<img
-    src="${ENV_AVATAR_BASE_URL}/${item.id}/${item.icon}.png"
+    src="${SERVER_ICON_URL}/${item.id}/${item.icon}.png"
   />`;
     if (item.icon == null) {
       icon = item.name;
